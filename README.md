@@ -1,28 +1,17 @@
 ## Concept
 
-This template is meant to serve as a foundation for Biarritz P3 following the Typescript Express stack, as learned in Wild Code School.
-It's pre-configured with a set of tools which'll help students produce industry-quality and easier-to-maintain code, while staying as simple as possible to use.
+This project is our 3rd and last project in the WCS training, in collaboration with Enedis.
+It's an API managing our data for our concepted platform of internal social network "Enedis Share".
+The purpose is to share posts with title, text, image, and be able to comment.
+These posts are protected by classing by spaces and categories (sub-spaces) with restricted members.
 
-## Setup & Use
+See also the front-end app :
+https://github.com/Tomahawkiwi/Project-3_EnedisShare_front
 
-### Project Initialization
 
-- In VSCode, install plugins **Prettier - Code formatter** and **ESLint** and configure them
-- Clone this repo, enter it
-- Run command `npm install`
+## Technos back-end
 
-### Available Commands
-
-- `dev` : Start the application in development environment
-- `build` : Compile Typescript code to Javascript in the dist folder
-- `start` : Starts the application
-- `setup` : Launch npm install and huskly install to setup the project
-
-## FAQ
-
-### Tools
-
-- _Husky_ : Allows to execute specific commands that trigger on _git_ events
-- _ESLint_ : "Quality of code" tool, ensures chosen rules will be enforced
-- _Prettier_ : "Quality of code" tool as well, focuses on the styleguide
-- _ Airbnb Standard_ : One of the most known "standards", even though it's not officially linked to ES/JS
+LANGUAGE : Typescript
+FRAMEWORK BACK : NodeJS / Express
+BDD : PostgreSQL, Docker (for dev), Caprover (for prod) and Cloudinary (for images)
+ORM : Prisma
