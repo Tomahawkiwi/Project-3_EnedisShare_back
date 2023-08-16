@@ -6,6 +6,8 @@ export type TUserWithoutPassword = Omit<User, "password">;
 
 type TUserBody = Omit<User, "id" | "createdAt" | "updatedAt">;
 
+type TUserBodyCreate = TUserBody & { site: string };
+
 type TUserBodyUpdate = Omit<TUserBody, "password">;
 
 type TUserQuery = {
@@ -28,7 +30,11 @@ export interface IUserHandlers {
     TUserWithoutPassword | ResponseError,
     null
   >;
-  create: RequestHandler<null, TUserWithoutPassword | ResponseError, TUserBody>;
+  create: RequestHandler<
+    null,
+    TUserWithoutPassword | ResponseError,
+    TUserBodyCreate
+  >;
   update: RequestHandler<
     { id: string },
     TUserWithoutPassword | ResponseError,
