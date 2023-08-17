@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { Role, User } from "@prisma/client";
 import { RequestHandler } from "express";
 import ResponseError from "../ResponseError";
 
@@ -16,6 +16,7 @@ type TUserQuery = {
   limit: string;
   spaceId: string;
   categoryId: string;
+  role?: Role;
 };
 
 export interface IUserHandlers {
