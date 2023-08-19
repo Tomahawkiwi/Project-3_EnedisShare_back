@@ -17,7 +17,6 @@ const updateUser: IUserHandlers["updateFromAdmin"] = async (req, res) => {
     teamId,
     workLocation,
   } = req.body;
-  console.log(req.body);
   if (roleUser === "ADMIN" || roleUser === "SUPER_ADMIN") {
     try {
       const updatedUser = await prisma.user.update({
