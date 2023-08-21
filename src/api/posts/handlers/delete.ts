@@ -9,6 +9,10 @@ const deletePost: IPostHandler["delete"] = async (req, res) => {
         .status(403)
         .json({ message: "Forbidden, you don't have the right access" });
     }
+
+    await prisma.comment.deleteMany({
+      where: { postId: id },
+    });
     const postDeleted = await prisma.post.delete({
       where: { id },
     });
