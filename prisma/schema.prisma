@@ -20,7 +20,7 @@ model User {
   imageUrl             String?
   firstname            String
   lastname             String
-  team                 Team                 @relation(fields: [teamId], references: [id])
+  team                 Team                 @relation(fields: [teamId], onUpdate: Cascade, references: [id])
   teamId               String
   workLocation         String
   birthday             DateTime             @db.Date
@@ -103,7 +103,7 @@ model SpacePermission {
 model Site {
   id          String           @id @unique @default(uuid())
   name        String           @unique
-  user        User             @relation(fields: [userId], references: [id])
+  user        User             @relation(fields: [userId], onUpdate: Cascade, references: [id])
   spaces      Space[]
   userId      String
   imageUrl    String
@@ -119,9 +119,9 @@ model Space {
   imageUrl    String
   description String
   isDisabled  Boolean           @default(false)
-  site        Site              @relation(fields: [siteId], references: [id])
+  site        Site              @relation(fields: [siteId], onUpdate: Cascade,references: [id])
   siteId      String
-  owner       User              @relation(fields: [ownerId], references: [id])
+  owner       User              @relation(fields: [ownerId], onUpdate: Cascade,references: [id])
   ownerId     String
   members     User[]            @relation("space_members")
   permissions SpacePermission[]
@@ -137,9 +137,9 @@ model Category {
   isGeneral   Boolean              @default(false)
   isDisabled  Boolean              @default(false)
   imageUrl    String
-  space       Space                @relation(fields: [spaceId], references: [id])
+  space       Space                @relation(fields: [spaceId], onDelete: Cascade, onUpdate: Cascade, references: [id])
   spaceId     String
-  owner       User                 @relation(fields: [ownerId], references: [id])
+  owner       User                 @relation(fields: [ownerId], onDelete: Cascade, onUpdate: Cascade, references: [id])
   ownerId     String
   members     User[]               @relation("category_members")
   permissions CategoryPermission[]
@@ -153,9 +153,9 @@ model Post {
   title       String
   content     String
   isDisabled  Boolean          @default(false)
-  category    Category         @relation(fields: [categoryId], references: [id])
+  category    Category         @relation(fields: [categoryId], onDelete: Cascade, onUpdate: Cascade, references: [id])
   categoryId  String
-  author      User?            @relation(fields: [authorId], references: [id])
+  author      User?            @relation(fields: [authorId], onDelete: Cascade, onUpdate: Cascade, references: [id])
   authorId    String?
   images      Image[]
   comments    Comment[]
@@ -168,9 +168,9 @@ model Comment {
   id         String   @id @unique @default(uuid())
   isDisabled Boolean  @default(false)
   content    String
-  post       Post     @relation(fields: [postId], references: [id])
+  post       Post     @relation(fields: [postId], onDelete: Cascade, onUpdate: Cascade, references: [id])
   postId     String
-  author     User     @relation(fields: [authorId], references: [id])
+  author     User     @relation(fields: [authorId], onDelete: Cascade, onUpdate: Cascade, references: [id])
   authorId   String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -179,9 +179,9 @@ model Comment {
 model Image {
   id         String   @id @unique @default(uuid())
   isDisabled Boolean  @default(false)
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], onDelete: Cascade, onUpdate: Cascade, references: [id])
   userId     String
-  post       Post?    @relation(fields: [postId], references: [id])
+  post       Post?    @relation(fields: [postId], onDelete: Cascade, onUpdate: Cascade, references: [id])
   postId     String?
   name       String
   url        String
@@ -202,7 +202,7 @@ model Notification {
   type    String
   content String
   link    String
-  user    User   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], onDelete: Cascade, onUpdate: Cascade, references: [id])
   userId  String
 }
 
