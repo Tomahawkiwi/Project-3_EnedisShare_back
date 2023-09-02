@@ -13,11 +13,11 @@ function exclude<User, Key extends keyof User>(
 }
 
 const getAllUsers: IUserHandlers["getAll"] = async (req, res) => {
-  const { userExcluded, team, limit, spaceId, categoryId } = req.query;
+  const { userExcluded, team, limit, spaceId, categoryId, role } = req.query;
   const limitParsed = parseInt(limit);
-  const { role } = req.user;
+  const { role: roleInApp } = req.user;
 
-  if (role === "ADMIN" || role === "SUPER_ADMIN") {
+  if (roleInApp === "ADMIN" || roleInApp === "SUPER_ADMIN") {
     try {
       const users = await prisma.user.findMany({
         where: {
@@ -25,6 +25,7 @@ const getAllUsers: IUserHandlers["getAll"] = async (req, res) => {
           id: { not: userExcluded },
           inSpaces: { some: { id: { equals: spaceId } } },
           inCategories: { some: { id: { equals: categoryId } } },
+          role: { equals: role ? role : undefined },
         },
         take: limitParsed ? limitParsed : undefined,
         skip: 0,
@@ -43,14 +44,14 @@ const getAllUsers: IUserHandlers["getAll"] = async (req, res) => {
         },
       });
       users.map((user) => exclude(user, ["password"]));
-      res.status(200).json(users);
+      res.status(200).setHeader("Content-Range", "bytes : 0-9/*").json(users);
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: error });
     }
   }
 
-  if (role === "USER") {
+  if (roleInApp === "USER") {
     try {
       const users = await prisma.user.findMany({
         where: {

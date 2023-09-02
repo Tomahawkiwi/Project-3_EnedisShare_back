@@ -30,7 +30,10 @@ const getAllPosts: IPostHandler["getAll"] = async (req, res) => {
         orderBy: { createdAt: "desc" },
       });
 
-      res.status(200).json(allPosts);
+      res
+        .status(200)
+        .setHeader("Content-Range", "bytes : 0-9/*")
+        .json(allPosts);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log("Cannot get all posts");
@@ -72,7 +75,10 @@ const getAllPosts: IPostHandler["getAll"] = async (req, res) => {
         orderBy: { createdAt: "desc" },
       });
 
-      res.status(200).json(allPosts);
+      res
+        .status(200)
+        .setHeader("Content-Range", "bytes : 0-9/*")
+        .json(allPosts);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log("Cannot get all posts");

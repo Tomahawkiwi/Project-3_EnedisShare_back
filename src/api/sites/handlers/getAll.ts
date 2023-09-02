@@ -8,7 +8,10 @@ const getAllSites: ISiteHandlers["getAll"] = async (req, res) => {
   try {
     if (role === "ADMIN") {
       const sites = await prisma.site.findMany();
-      return res.status(200).json(sites);
+      return res
+        .status(200)
+        .setHeader("Content-Range", "bytes : 0-9/*")
+        .json(sites);
     }
 
     const sites = await prisma.site.findMany({

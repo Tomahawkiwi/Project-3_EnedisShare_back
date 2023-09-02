@@ -27,7 +27,7 @@ export const corsOptions = {
     return callback(new Error("Not allowed by CORS"), false);
   },
   credentials: true,
-  exposedHeaders: ["Authorization"],
+  exposedHeaders: ["Authorization", "Content-Range"],
 };
 
 export default corsOptions;

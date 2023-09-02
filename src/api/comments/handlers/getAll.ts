@@ -22,7 +22,10 @@ const getAllComments: ICommentHandlers["getAll"] = async (req, res) => {
         },
         orderBy: { createdAt: "asc" },
       });
-      res.status(200).json(comments);
+      res
+        .status(200)
+        .setHeader("Content-Range", "bytes : 0-9/*")
+        .json(comments);
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: error });
