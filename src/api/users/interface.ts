@@ -4,7 +4,7 @@ import ResponseError from "../ResponseError";
 
 export type TUserWithoutPassword = Omit<User, "password">;
 
-type TUserBody = Omit<User, "id" | "createdAt" | "updatedAt">;
+type TUserBody = Omit<User, "createdAt" | "updatedAt">;
 
 type TUserBodyUpdate = Omit<TUserBody, "password">;
 
