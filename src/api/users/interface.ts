@@ -4,7 +4,7 @@ import ResponseError from "../ResponseError";
 
 export type TUserWithoutPassword = Omit<User, "password">;
 
-type TUserBody = Omit<User, "id" | "createdAt" | "updatedAt">;
+type TUserBody = Omit<User, "createdAt" | "updatedAt">;
 
 type TUserBodyCreate = TUserBody & { site: string };
 
@@ -17,6 +17,20 @@ type TUserQuery = {
   spaceId: string;
   categoryId: string;
   role?: Role;
+};
+
+type TUserBodyAdmin = {
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  birthday?: Date;
+  teamId?: string;
+  workLocation?: string;
+  isDisabled?: boolean;
+  showBirthday?: boolean;
+  showEmail?: boolean;
+  role: Role;
+  imageUrl?: string | null;
 };
 
 export interface IUserHandlers {
@@ -40,6 +54,13 @@ export interface IUserHandlers {
     { id: string },
     TUserWithoutPassword | ResponseError,
     TUserBodyUpdate
+  >;
+  updateFromAdmin: RequestHandler<
+    {
+      id: string;
+    },
+    TUserBodyAdmin | ResponseError,
+    TUserBodyAdmin
   >;
   delete: RequestHandler<
     { id: string },

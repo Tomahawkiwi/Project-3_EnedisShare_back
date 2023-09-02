@@ -3,10 +3,12 @@
 import argon2 from "argon2";
 import { IUserHandlers } from "../interface";
 import prisma from "../../../../prisma/client";
+import { connectUserToSpaceAndCategory } from "../../spaces/handlers/addUser";
 
 const createUser: IUserHandlers["create"] = async (req, res) => {
   try {
     const {
+      id,
       birthday,
       email,
       firstname,
@@ -16,6 +18,7 @@ const createUser: IUserHandlers["create"] = async (req, res) => {
       workLocation,
       isDisabled,
       teamId,
+      role,
       site,
     } = req.body;
 
@@ -29,6 +32,7 @@ const createUser: IUserHandlers["create"] = async (req, res) => {
 
     const newUser = await prisma.user.create({
       data: {
+        id,
         birthday,
         email,
         firstname,
@@ -38,6 +42,7 @@ const createUser: IUserHandlers["create"] = async (req, res) => {
         workLocation,
         isDisabled,
         teamId,
+        role,
         inSites: { connect: { id: site } },
       },
     });
@@ -89,6 +94,11 @@ const createUser: IUserHandlers["create"] = async (req, res) => {
 
     const { password: removedPassword, ...userWithoutPassword } = newUser;
 
+    const idOfGeneralSpace = "519a5e35-f543-425b-8f74-ffaddd53b5e1";
+    await connectUserToSpaceAndCategory({
+      spaceId: idOfGeneralSpace,
+      userIds: [newUser.id],
+    });
     res.status(200).json(userWithoutPassword);
   } catch (error) {
     console.log(500);

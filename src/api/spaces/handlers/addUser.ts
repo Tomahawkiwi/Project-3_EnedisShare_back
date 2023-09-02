@@ -2,18 +2,23 @@
 import prisma from "../../../../prisma/client";
 import { SpaceHandlers } from "./../interface";
 
-const addUser: SpaceHandlers["addUser"] = async (req, res) => {
-  const { id } = req.params;
-  const usersToConnect = req.body;
+type connectUserToSpaceAndCategoryProps = {
+  spaceId: string;
+  userIds: string[];
+};
 
+export const connectUserToSpaceAndCategory = async ({
+  spaceId,
+  userIds,
+}: connectUserToSpaceAndCategoryProps) => {
   try {
     const updatedSpace = await prisma.space.update({
       where: {
-        id,
+        id: spaceId,
       },
       data: {
         members: {
-          connect: usersToConnect.map((userId) => ({ id: userId })),
+          connect: userIds.map((userId) => ({ id: userId })),
         },
       },
       include: {
@@ -31,11 +36,27 @@ const addUser: SpaceHandlers["addUser"] = async (req, res) => {
       },
       data: {
         members: {
-          connect: usersToConnect.map((userId) => ({ id: userId })),
+          connect: userIds.map((userId) => ({ id: userId })),
         },
       },
     });
 
+    return updatedSpace;
+  } catch (error) {
+    console.log(error);
+    throw error; // Throwing so that error can be caught in calling function
+  }
+};
+
+const addUser: SpaceHandlers["addUser"] = async (req, res) => {
+  const { id } = req.params;
+  const usersToConnect = req.body;
+
+  try {
+    const updatedSpace = await connectUserToSpaceAndCategory({
+      spaceId: id,
+      userIds: usersToConnect,
+    });
     res.status(200).json(updatedSpace);
   } catch (error) {
     console.log(error);

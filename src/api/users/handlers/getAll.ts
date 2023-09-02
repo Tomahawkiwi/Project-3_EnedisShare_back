@@ -34,6 +34,14 @@ const getAllUsers: IUserHandlers["getAll"] = async (req, res) => {
             lastname: "asc",
           },
         ],
+        include: {
+          inSpaces: true,
+          inCategories: { include: { space: { select: { name: true } } } },
+          posts: true,
+          comments: true,
+          inSites: true,
+          team: true,
+        },
       });
       users.map((user) => exclude(user, ["password"]));
       res.status(200).setHeader("Content-Range", "bytes : 0-9/*").json(users);

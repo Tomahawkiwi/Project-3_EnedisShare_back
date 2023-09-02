@@ -17,6 +17,7 @@ const getAllPosts: IPostHandler["getAll"] = async (req, res) => {
               },
             },
           },
+          isDisabled: false,
         },
 
         include: {
