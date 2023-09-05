@@ -9,6 +9,7 @@ const createSpaceFromAdmin: SpaceHandlers["createFromAdmin"] = async (
 ) => {
   const { role } = req.user;
   const { name, siteId, ownerId, description, imageUrl } = req.body;
+  console.log(req.body);
 
   try {
     if (role === "ADMIN" || role === "SUPER_ADMIN") {

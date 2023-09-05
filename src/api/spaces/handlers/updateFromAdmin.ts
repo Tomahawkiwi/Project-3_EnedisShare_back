@@ -6,7 +6,7 @@ import { SpaceHandlers } from "../interface";
 const updateSpace: SpaceHandlers["updateFromAdmin"] = async (req, res) => {
   const { id } = req.params;
   const { role: roleUser } = req.user;
-  const { name: spaceName, description } = req.body;
+  const { name: spaceName, description, imageUrl } = req.body;
 
   if (roleUser === "ADMIN" || roleUser === "SUPER_ADMIN") {
     try {
@@ -37,6 +37,7 @@ const updateSpace: SpaceHandlers["updateFromAdmin"] = async (req, res) => {
             name: spaceName || undefined,
             description: description || undefined,
             siteId: "88aab5a1-4d7d-412e-9da2-0f082e569dfd",
+            imageUrl: imageUrl || undefined,
           },
         });
         res.status(200).json(updatedSpace);
