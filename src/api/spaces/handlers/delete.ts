@@ -11,6 +11,9 @@ const deleteSpace: SpaceHandlers["delete"] = async (req, res) => {
         .status(403)
         .json({ message: "Forbidden, you don't have the right access" });
     }
+    await prisma.category.deleteMany({
+      where: { spaceId: id },
+    });
     const deleteSpace = await prisma.space.delete({
       where: {
         id: id,

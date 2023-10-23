@@ -12,8 +12,15 @@ const getAllCategories: CategoryHandlers["getAll"] = async (req, res) => {
       const categories = await prisma.category.findMany({
         where: { members: { some: { id: { equals: userID } } } },
         orderBy: { name: "asc" },
+        include: {
+          space: { select: { name: true } },
+          owner: { select: { firstname: true, lastname: true } },
+        },
       });
-      return res.status(200).json(categories);
+      return res
+        .status(200)
+        .setHeader("Content-Range", "bytes : 0-9/*")
+        .json(categories);
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: error });

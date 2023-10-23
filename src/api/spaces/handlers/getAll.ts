@@ -12,7 +12,7 @@ const getAllSpaces: SpaceHandlers["getAll"] = async (req, res) => {
           categories: categories === "true" ? true : false,
         },
       });
-      res.status(200).json(spaces);
+      res.status(200).setHeader("Content-Range", "bytes : 0-9/*").json(spaces);
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: error });
