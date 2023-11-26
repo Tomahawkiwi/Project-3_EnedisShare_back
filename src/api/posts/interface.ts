@@ -12,6 +12,7 @@ type TPostQuery = {
   spaceId?: string;
   author?: string;
   space?: string;
+  fromAdmin?: string;
 };
 
 type TPostBodyAdmin = {
@@ -20,19 +21,13 @@ type TPostBodyAdmin = {
 
 export default interface IPostHandler {
   getAll: RequestHandler<null, Post[] | ResponseError, null, TPostQuery>;
-  getAllPostsByAdmin: RequestHandler<
-    null,
-    Post[] | ResponseError,
-    null,
-    TPostQuery
-  >;
   getOne: RequestHandler<{ id: string }, Post | ResponseError, null>;
   create: RequestHandler<null, Post | ResponseError, TPostBody>;
-  update: RequestHandler<{ id: string }, Post | ResponseError, TPostBody>;
-  updatePostByAdmin: RequestHandler<
+  update: RequestHandler<
     { id: string },
-    Post | ResponseError,
-    TPostBodyAdmin
+    Post | TPostBodyAdmin | ResponseError,
+    TPostBody,
+    TPostQuery
   >;
   delete: RequestHandler<{ id: string }, Post | ResponseError, null>;
   disable: RequestHandler<{ id: string }, Post | ResponseError, null>;

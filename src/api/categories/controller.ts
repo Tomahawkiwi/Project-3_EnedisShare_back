@@ -3,7 +3,6 @@ import getAll from "./handlers/getAll";
 import getOne from "./handlers/getOne";
 import create from "./handlers/create";
 import update from "./handlers/update";
-import updateFromAdmin from "./handlers/updateFromAdmin";
 import delete_ from "./handlers/delete";
 import addUser from "./handlers/addUser";
 import removeUser from "./handlers/removeUser";
@@ -16,7 +15,6 @@ const controller: CategoryHandlers = {
   create,
   delete: delete_,
   update,
-  updateFromAdmin,
   addUser,
   removeUser,
   disable,

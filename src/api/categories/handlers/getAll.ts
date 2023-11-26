@@ -5,9 +5,10 @@ import prisma from "../../../../prisma/client";
 
 const getAllCategories: CategoryHandlers["getAll"] = async (req, res) => {
   const { id, role } = req.user;
-  const { userID } = req.query;
+  const { userID, fromAdmin } = req.query;
 
-  if (role === "ADMIN" || role === "SUPER_ADMIN") {
+  // Only from admin
+  if ((role === "ADMIN" || role === "SUPER_ADMIN") && fromAdmin === "true") {
     try {
       const categories = await prisma.category.findMany({
         where: { members: { some: { id: { equals: userID } } } },
@@ -25,25 +26,25 @@ const getAllCategories: CategoryHandlers["getAll"] = async (req, res) => {
       console.log(error);
       res.status(500).json({ message: error });
     }
+    return;
   }
 
-  if (role === "USER") {
-    try {
-      const categories = await prisma.category.findMany({
-        where: {
-          AND: [
-            { members: { some: { id: { equals: id } } } },
-            { members: { some: { id: { equals: userID } } } },
-            { isDisabled: false },
-          ],
-        },
-        orderBy: { name: "asc" },
-      });
-      res.status(200).json(categories);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: error });
-    }
+  // All users
+  try {
+    const categories = await prisma.category.findMany({
+      where: {
+        AND: [
+          { members: { some: { id: { equals: id } } } },
+          { members: { some: { id: { equals: userID } } } },
+          { isDisabled: false },
+        ],
+      },
+      orderBy: { name: "asc" },
+    });
+    res.status(200).json(categories);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error });
   }
 };
 

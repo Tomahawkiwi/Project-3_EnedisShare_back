@@ -6,64 +6,59 @@ import { uploadImage } from "../../../middlewares/upload/uploadCloudinary";
 
 const updateUser: IUserHandlers["update"] = async (req, res) => {
   const { id } = req.params;
-  const { role, id: userId } = req.user;
-  const { fields, files } = await asyncFormParse(req);
-  const {
-    firstname,
-    lastname,
-    email,
-    birthday,
-    teamId,
-    workLocation,
-    isDisabled,
-    showBirthday,
-    showEmail,
-  } = fields;
+  const { id: userId, role: authRole } = req.user;
+  const { fromAdmin } = req.query;
 
-  if (role === "ADMIN" || role === "SUPER_ADMIN") {
+  // Only from admin
+  if (
+    (authRole === "ADMIN" || authRole === "SUPER_ADMIN") &&
+    fromAdmin === "true"
+  ) {
+    const {
+      firstname,
+      lastname,
+      birthday,
+      email,
+      isDisabled,
+      showBirthday,
+      showEmail,
+      role,
+      teamId,
+      workLocation,
+    } = req.body;
+
     try {
-      const dataProfilePicture =
-        files.profileImage &&
-        (await uploadImage(files.profileImage[0].path, "/profileImages"));
-
       const updatedUser = await prisma.user.update({
         where: {
           id: id,
         },
         data: {
-          firstname: firstname ? firstname[0] : undefined,
-          lastname: lastname ? lastname[0] : undefined,
-          email: email ? email[0] : undefined,
-          imageUrl: dataProfilePicture
-            ? dataProfilePicture.securePath
-            : undefined,
-          birthday: birthday ? birthday[0] : undefined,
-          teamId: teamId ? teamId[0] : undefined,
-          workLocation: workLocation ? workLocation[0] : undefined,
-          isDisabled: isDisabled
-            ? (isDisabled[0] === "true" && true) ||
-              (isDisabled[0] === "false" && false)
-            : undefined,
-          showBirthday: showBirthday
-            ? (showBirthday[0] === "true" && true) ||
-              (showBirthday[0] === "false" && false)
-            : undefined,
-          showEmail: showBirthday
-            ? (showBirthday[0] === "true" && true) ||
-              (showBirthday[0] === "false" && false)
-            : undefined,
+          firstname: firstname || undefined,
+          lastname: lastname || undefined,
+          birthday: birthday || undefined,
+          email: email || undefined,
+          role: role || undefined,
+          isDisabled: isDisabled || undefined,
+          showBirthday: showBirthday || undefined,
+          showEmail: showEmail || undefined,
+          teamId: teamId || undefined,
+          workLocation: workLocation || undefined,
         },
       });
-
       const { password: removedPassword, ...userWithoutPassword } = updatedUser;
       res.status(200).json(userWithoutPassword);
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: error });
     }
+    return;
   }
 
-  if (role === "USER") {
+  // All users
+  if (id === userId) {
+    const { fields, files } = await asyncFormParse(req);
+    const { showBirthday, showEmail } = fields;
+
     try {
       const dataProfilePicture =
         files.profileImage &&
@@ -75,15 +70,10 @@ const updateUser: IUserHandlers["update"] = async (req, res) => {
           imageUrl: dataProfilePicture
             ? dataProfilePicture.securePath
             : undefined,
-          showBirthday: showBirthday
-            ? (showBirthday[0] === "true" && true) ||
-              (showBirthday[0] === "false" && false)
-            : undefined,
-
-          showEmail: showEmail
-            ? (showEmail[0] === "true" && true) ||
-              (showEmail[0] === "false" && false)
-            : undefined,
+          showBirthday:
+            typeof showBirthday === "undefined" ? undefined : showBirthday[0],
+          showEmail:
+            typeof showEmail === "undefined" ? undefined : showEmail[0],
         },
       });
       const { password: removedPassword, ...userWithoutPassword } = updatedUser;
@@ -92,6 +82,8 @@ const updateUser: IUserHandlers["update"] = async (req, res) => {
       console.log(error);
       res.status(500).json({ message: error });
     }
+  } else {
+    res.status(403).json({ message: "Forbidden" });
   }
 };
 

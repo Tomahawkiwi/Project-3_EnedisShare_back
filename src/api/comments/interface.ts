@@ -9,6 +9,7 @@ type TQueryComment = {
   postId?: string;
   author?: string;
   authorId?: string;
+  fromAdmin?: string;
 };
 
 export interface ICommentHandlers {

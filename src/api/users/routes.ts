@@ -9,7 +9,6 @@ router.get("/", controller.getAll);
 router.get("/:id", checkIfIsDisabledForGetOne("user"), controller.getOne);
 router.post("/", controller.create);
 router.put("/:id", controller.update);
-router.put("/admin/:id", controller.updateFromAdmin);
 router.delete("/:id", checkIfIsAdminOrSuper(), controller.delete_);
 
 export default router;

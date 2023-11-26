@@ -12,7 +12,7 @@ type TSpaceBodyAdmin = {
   ownerId?: string;
 };
 
-type TSpaceQuery = { categories?: string; owner?: string };
+type TSpaceQuery = { categories?: string; owner?: string; fromAdmin?: string };
 
 type TAddUserBody = string[];
 type TRemoveUserBody = string[];
@@ -27,28 +27,34 @@ export interface SpaceHandlers {
   >;
   create: RequestHandler<
     { id: string },
-    Space | ResponseError | string,
-    TSpaceBody
+    Space | TSpaceBodyAdmin | ResponseError | string,
+    TSpaceBody | TSpaceBodyAdmin,
+    TSpaceQuery
   >;
-  createFromAdmin: RequestHandler<
+  update: RequestHandler<
     { id: string },
-    TSpaceBodyAdmin | ResponseError | string,
-    TSpaceBodyAdmin
+    Space | TSpaceBodyAdmin | ResponseError,
+    TSpaceBody | TSpaceBodyAdmin,
+    TSpaceQuery
   >;
-  update: RequestHandler<{ id: string }, Space | ResponseError, TSpaceBody>;
-  updateFromAdmin: RequestHandler<
-    {
-      id: string;
-    },
+  updateSpaceImage: RequestHandler<
+    { id: string },
     TSpaceBodyAdmin | ResponseError,
-    TSpaceBodyAdmin
+    TSpaceBody,
+    TSpaceQuery
   >;
   delete: RequestHandler;
-  addUser: RequestHandler<{ id: string }, Space | ResponseError, TAddUserBody>;
+  addUser: RequestHandler<
+    { id: string },
+    Space | ResponseError,
+    TAddUserBody,
+    TSpaceQuery
+  >;
   removeUser: RequestHandler<
     { id: string },
     Space | ResponseError,
-    TRemoveUserBody
+    TRemoveUserBody,
+    TSpaceQuery
   >;
   disable: RequestHandler<{ id: string }, Space | ResponseError, null>;
   undisable: RequestHandler<{ id: string }, Space | ResponseError, null>;

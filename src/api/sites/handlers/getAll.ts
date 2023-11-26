@@ -5,8 +5,11 @@ import prisma from "../../../../prisma/client";
 
 const getAllSites: ISiteHandlers["getAll"] = async (req, res) => {
   const { id, role } = req.user;
+  const { fromAdmin } = req.query;
+
+  // Only from admin
   try {
-    if (role === "ADMIN") {
+    if ((role === "ADMIN" || role === "SUPER_ADMIN") && fromAdmin === "true") {
       const sites = await prisma.site.findMany();
       return res
         .status(200)
@@ -14,6 +17,7 @@ const getAllSites: ISiteHandlers["getAll"] = async (req, res) => {
         .json(sites);
     }
 
+    // All users
     const sites = await prisma.site.findMany({
       where: {
         members: {

@@ -16,8 +16,13 @@ const getAllUsers: IUserHandlers["getAll"] = async (req, res) => {
   const { userExcluded, team, limit, spaceId, categoryId, role } = req.query;
   const limitParsed = parseInt(limit);
   const { role: roleInApp } = req.user;
+  const { fromAdmin } = req.query;
 
-  if (roleInApp === "ADMIN" || roleInApp === "SUPER_ADMIN") {
+  //Only from admin
+  if (
+    (roleInApp === "ADMIN" || roleInApp === "SUPER_ADMIN") &&
+    fromAdmin === "true"
+  ) {
     try {
       const users = await prisma.user.findMany({
         where: {
@@ -49,32 +54,32 @@ const getAllUsers: IUserHandlers["getAll"] = async (req, res) => {
       console.log(error);
       res.status(500).json({ message: error });
     }
+    return;
   }
 
-  if (roleInApp === "USER") {
-    try {
-      const users = await prisma.user.findMany({
-        where: {
-          teamId: { contains: team },
-          id: { not: userExcluded },
-          inSpaces: { some: { id: { equals: spaceId } } },
-          inCategories: { some: { id: { equals: categoryId } } },
-          isDisabled: false,
+  // All users
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        teamId: { contains: team },
+        id: { not: userExcluded },
+        inSpaces: { some: { id: { equals: spaceId } } },
+        inCategories: { some: { id: { equals: categoryId } } },
+        isDisabled: false,
+      },
+      take: limitParsed ? limitParsed : undefined,
+      skip: 0,
+      orderBy: [
+        {
+          lastname: "asc",
         },
-        take: limitParsed ? limitParsed : undefined,
-        skip: 0,
-        orderBy: [
-          {
-            lastname: "asc",
-          },
-        ],
-      });
-      users.map((user) => exclude(user, ["password"]));
-      res.status(200).json(users);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: error });
-    }
+      ],
+    });
+    users.map((user) => exclude(user, ["password"]));
+    res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error });
   }
 };
 

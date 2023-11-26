@@ -17,20 +17,7 @@ type TUserQuery = {
   spaceId: string;
   categoryId: string;
   role?: Role;
-};
-
-type TUserBodyAdmin = {
-  firstname?: string;
-  lastname?: string;
-  email?: string;
-  birthday?: Date;
-  teamId?: string;
-  workLocation?: string;
-  isDisabled?: boolean;
-  showBirthday?: boolean;
-  showEmail?: boolean;
-  role: Role;
-  imageUrl?: string | null;
+  fromAdmin?: string;
 };
 
 export interface IUserHandlers {
@@ -48,19 +35,14 @@ export interface IUserHandlers {
   create: RequestHandler<
     null,
     TUserWithoutPassword | ResponseError,
-    TUserBodyCreate
+    TUserBodyCreate,
+    TUserQuery
   >;
   update: RequestHandler<
     { id: string },
     TUserWithoutPassword | ResponseError,
-    TUserBodyUpdate
-  >;
-  updateFromAdmin: RequestHandler<
-    {
-      id: string;
-    },
-    TUserBodyAdmin | ResponseError,
-    TUserBodyAdmin
+    TUserBodyUpdate,
+    TUserQuery
   >;
   delete: RequestHandler<
     { id: string },

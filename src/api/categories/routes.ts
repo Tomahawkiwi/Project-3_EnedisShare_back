@@ -10,7 +10,6 @@ router.get("/:id", controller.getOne);
 router.post("/", controller.create);
 router.delete("/:id", checkIfIsAdminOrSuper(), controller.delete);
 router.put("/:id", checkIfIsOwner("category"), controller.update);
-router.put("/admin/:id", checkIfIsAdminOrSuper(), controller.updateFromAdmin);
 router.put("/:id/addUser", checkIfIsOwner("category"), controller.addUser);
 router.put(
   "/:id/removeUser",
