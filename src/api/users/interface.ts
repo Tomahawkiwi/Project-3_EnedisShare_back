@@ -1,10 +1,12 @@
-import { User } from "@prisma/client";
+import { Role, User } from "@prisma/client";
 import { RequestHandler } from "express";
 import ResponseError from "../ResponseError";
 
 export type TUserWithoutPassword = Omit<User, "password">;
 
-type TUserBody = Omit<User, "id" | "createdAt" | "updatedAt">;
+type TUserBody = Omit<User, "createdAt" | "updatedAt">;
+
+type TUserBodyCreate = TUserBody & { site: string };
 
 type TUserBodyUpdate = Omit<TUserBody, "password">;
 
@@ -14,6 +16,8 @@ type TUserQuery = {
   limit: string;
   spaceId: string;
   categoryId: string;
+  role?: Role;
+  fromAdmin?: string;
 };
 
 export interface IUserHandlers {
@@ -28,11 +32,17 @@ export interface IUserHandlers {
     TUserWithoutPassword | ResponseError,
     null
   >;
-  create: RequestHandler<null, TUserWithoutPassword | ResponseError, TUserBody>;
+  create: RequestHandler<
+    null,
+    TUserWithoutPassword | ResponseError,
+    TUserBodyCreate,
+    TUserQuery
+  >;
   update: RequestHandler<
     { id: string },
     TUserWithoutPassword | ResponseError,
-    TUserBodyUpdate
+    TUserBodyUpdate,
+    TUserQuery
   >;
   delete: RequestHandler<
     { id: string },

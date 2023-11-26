@@ -7,6 +7,34 @@ import { uploadImage } from "../../../middlewares/upload/uploadCloudinary";
 
 const updateCategory: CategoryHandlers["update"] = async (req, res) => {
   const { id } = req.params;
+  const { role: authRole } = req.user;
+  const { fromAdmin } = req.query;
+
+  // Only from admin
+  if (
+    (authRole === "ADMIN" || authRole === "SUPER_ADMIN") &&
+    fromAdmin === "true"
+  ) {
+    const { name: categorieName, description } = req.body;
+    try {
+      const updatedSpace = await prisma.category.update({
+        where: {
+          id: id,
+        },
+        data: {
+          name: categorieName,
+          description: description || undefined,
+        },
+      });
+      res.status(200).json(updatedSpace);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error });
+    }
+    return;
+  }
+
+  // All users
   const { fields, files } = await asyncFormParse(req);
   const { name, spaceId, ownerId, description, isDisabled } = fields;
 
@@ -25,7 +53,8 @@ const updateCategory: CategoryHandlers["update"] = async (req, res) => {
         imageUrl: dataImage ? dataImage.securePath : undefined,
         ownerId: ownerId ? ownerId[0] : undefined,
         description: description ? description[0] : undefined,
-        isDisabled: isDisabled ? isDisabled[0] : undefined,
+        isDisabled:
+          typeof isDisabled === "undefined" ? undefined : isDisabled[0],
         // posts: {
         //   updateMany: {
         //     where: { categoryId: id },

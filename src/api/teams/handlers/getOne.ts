@@ -9,7 +9,13 @@ const getOneTeam: ITeamHandlers["getOne"] = async (req, res) => {
     const Oneteam = await prisma.team.findUniqueOrThrow({
       where: { id },
       include: {
-        members: members === "true" ? { where: { isDisabled: false } } : false,
+        members:
+          members === "true"
+            ? {
+                where: { isDisabled: false },
+                select: { firstname: true, lastname: true, imageUrl: true },
+              }
+            : false,
       },
     });
     res.status(200).json(Oneteam);

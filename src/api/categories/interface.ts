@@ -3,10 +3,15 @@ import { Category } from "@prisma/client";
 import ResponseError from "../ResponseError";
 
 type TCategoryBody = Omit<Category, "id" | "createdAt" | "updatedAt">;
+type TCategoryUpdateAdmin = Omit<
+  TCategoryBody,
+  "imageUrl" | "spaceId" | "ownerId" | "isDisabled"
+>;
+
 type TAddUserBody = string[];
 type TRemoveUserBody = string[];
 
-type TQuery = { userID?: string; space?: string };
+type TQuery = { userID?: string; space?: string; fromAdmin?: string };
 
 export interface CategoryHandlers {
   getAll: RequestHandler<null, Category[] | ResponseError, null, TQuery>;
@@ -24,7 +29,8 @@ export interface CategoryHandlers {
   update: RequestHandler<
     { id: string },
     Category | ResponseError,
-    TCategoryBody
+    TCategoryBody | TCategoryUpdateAdmin,
+    TQuery
   >;
   delete: RequestHandler<{ id: string }, Category | ResponseError, null>;
   addUser: RequestHandler<

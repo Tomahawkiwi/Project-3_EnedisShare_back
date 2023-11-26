@@ -5,12 +5,12 @@ import ResponseError from "../ResponseError";
 
 type TSiteBody = Omit<Site, "id" | "createdAt" | "updatedAt">;
 
-type TSiteQuery = { memberId: string };
+type TSiteQuery = { memberId: string; fromAdmin?: string };
 
 export interface ISiteHandlers {
   getAll: RequestHandler<null, Site[] | ResponseError, null, TSiteQuery>;
   getOne: RequestHandler<{ id: string }, Site | ResponseError, null>;
-  create: RequestHandler<null, Site | ResponseError, TSiteBody>;
+  create: RequestHandler<null, Site | ResponseError, TSiteBody, TSiteQuery>;
   update: RequestHandler<{ id: string }, Site | ResponseError, TSiteBody>;
   delete: RequestHandler<{ id: string }, Site | ResponseError, null>;
 }

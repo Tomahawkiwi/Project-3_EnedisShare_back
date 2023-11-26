@@ -1,0 +1,250 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  role Role [not null, default: 'USER']
+  imageUrl String
+  firstname String [not null]
+  lastname String [not null]
+  team Team [not null]
+  teamId String [not null]
+  workLocation String [not null]
+  birthday DateTime [not null]
+  showBirthday Boolean [not null, default: false]
+  email String [unique, not null]
+  showEmail Boolean [not null, default: false]
+  password String [not null]
+  images Image [not null]
+  posts Post [not null]
+  isDisabled Boolean [not null, default: false]
+  spaces Space [not null]
+  categories Category [not null]
+  inCategories Category [not null]
+  inSpaces Space [not null]
+  inSites Site [not null]
+  comments Comment [not null]
+  sites Site [not null]
+  site_permissions SitePermission [not null]
+  post_permissions PostPermission [not null]
+  category_permissions CategoryPermission [not null]
+  space_permissions SpacePermission [not null]
+  notifications Notification [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table SitePermission {
+  id String [pk]
+  name Permission [not null, default: 'READ']
+  read Boolean [not null, default: false]
+  write Boolean [not null, default: false]
+  update Boolean [not null, default: false]
+  delete Boolean [not null, default: false]
+  own Boolean [not null, default: false]
+  user User [not null]
+  userId String [not null]
+  site Site [not null]
+  siteId String [not null]
+}
+
+Table PostPermission {
+  id String [pk]
+  name Permission [not null, default: 'READ']
+  read Boolean [not null, default: false]
+  write Boolean [not null, default: false]
+  update Boolean [not null, default: false]
+  delete Boolean [not null, default: false]
+  user User [not null]
+  userId String [not null]
+  post Post [not null]
+  postId String [not null]
+}
+
+Table CategoryPermission {
+  id String [pk]
+  name Permission [not null, default: 'READ']
+  read Boolean [not null, default: false]
+  write Boolean [not null, default: false]
+  update Boolean [not null, default: false]
+  delete Boolean [not null, default: false]
+  user User [not null]
+  userId String [not null]
+  category Category [not null]
+  categoryId String [not null]
+}
+
+Table SpacePermission {
+  id String [pk]
+  name Permission [not null, default: 'READ']
+  read Boolean [not null, default: false]
+  write Boolean [not null, default: false]
+  update Boolean [not null, default: false]
+  delete Boolean [not null, default: false]
+  user User [not null]
+  userId String [not null]
+  space Space [not null]
+  spaceId String [not null]
+}
+
+Table Site {
+  id String [pk]
+  name String [unique, not null]
+  user User [not null]
+  spaces Space [not null]
+  userId String [not null]
+  imageUrl String [not null]
+  members User [not null]
+  permissions SitePermission [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Space {
+  id String [pk]
+  name String [unique, not null]
+  imageUrl String [not null]
+  description String [not null]
+  isDisabled Boolean [not null, default: false]
+  site Site [not null]
+  siteId String [not null]
+  owner User [not null]
+  ownerId String [not null]
+  members User [not null]
+  permissions SpacePermission [not null]
+  categories Category [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Category {
+  id String [pk]
+  name String [not null]
+  description String [not null]
+  isGeneral Boolean [not null, default: false]
+  isDisabled Boolean [not null, default: false]
+  imageUrl String [not null]
+  space Space [not null]
+  spaceId String [not null]
+  owner User [not null]
+  ownerId String [not null]
+  members User [not null]
+  permissions CategoryPermission [not null]
+  posts Post [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Post {
+  id String [pk]
+  title String [not null]
+  content String [not null]
+  isDisabled Boolean [not null, default: false]
+  category Category [not null]
+  categoryId String [not null]
+  author User
+  authorId String
+  images Image [not null]
+  comments Comment [not null]
+  permissions PostPermission [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Comment {
+  id String [pk]
+  isDisabled Boolean [not null, default: false]
+  content String [not null]
+  post Post [not null]
+  postId String [not null]
+  author User [not null]
+  authorId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Image {
+  id String [pk]
+  isDisabled Boolean [not null, default: false]
+  user User [not null]
+  userId String [not null]
+  post Post
+  postId String
+  name String [not null]
+  url String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Team {
+  id String [pk]
+  name String [unique, not null]
+  members User [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Notification {
+  id String [pk]
+  type String [not null]
+  content String [not null]
+  link String [not null]
+  user User [not null]
+  userId String [not null]
+}
+
+Enum Role {
+  SUPER_ADMIN
+  ADMIN
+  USER
+}
+
+Enum Permission {
+  WRITE
+  READ
+  UPDATE
+  DELETE
+}
+
+Ref: User.teamId > Team.id
+
+Ref: SitePermission.userId > User.id
+
+Ref: SitePermission.siteId > Site.id
+
+Ref: PostPermission.userId > User.id
+
+Ref: PostPermission.postId > Post.id
+
+Ref: CategoryPermission.userId > User.id
+
+Ref: CategoryPermission.categoryId > Category.id
+
+Ref: SpacePermission.userId > User.id
+
+Ref: SpacePermission.spaceId > Space.id
+
+Ref: Site.userId > User.id
+
+Ref: Space.siteId > Site.id
+
+Ref: Space.ownerId > User.id
+
+Ref: Category.spaceId > Space.id [delete: Cascade]
+
+Ref: Category.ownerId > User.id [delete: Cascade]
+
+Ref: Post.categoryId > Category.id [delete: Cascade]
+
+Ref: Post.authorId > User.id [delete: Cascade]
+
+Ref: Comment.postId > Post.id [delete: Cascade]
+
+Ref: Comment.authorId > User.id [delete: Cascade]
+
+Ref: Image.userId > User.id [delete: Cascade]
+
+Ref: Image.postId > Post.id [delete: Cascade]
+
+Ref: Notification.userId > User.id [delete: Cascade]
