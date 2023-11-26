@@ -9,6 +9,7 @@ const router = Router();
 router.get("/", controller.getAll);
 router.get("/:id", checkIfIsDisabledForGetOne("space"), controller.getOne);
 router.post("/", controller.create);
+router.post("/uploadImage", controller.uploadSpaceImage);
 router.put("/:id", checkIfIsOwner("space"), controller.update);
 router.delete("/:id", checkIfIsAdminOrSuper(), controller.delete);
 router.put("/:id/addUser", checkIfIsOwner("space"), controller.addUser);

@@ -1,15 +1,13 @@
 /* eslint-disable no-console */
 
 import { SpaceHandlers } from "../interface";
-import prisma from "../../../../prisma/client";
 import asyncFormParse from "../../../middlewares/upload/formParse";
 import { uploadImage } from "../../../middlewares/upload/uploadCloudinary";
 
-const updateSpaceImage: SpaceHandlers["updateSpaceImage"] = async (
+const uploadSpaceImage: SpaceHandlers["uploadSpaceImage"] = async (
   req,
   res
 ) => {
-  const { id: spaceId } = req.params;
   const { role: authRole } = req.user;
   const { fromAdmin } = req.query;
 
@@ -25,13 +23,7 @@ const updateSpaceImage: SpaceHandlers["updateSpaceImage"] = async (
         "/spaceImages"
       );
       if (dataImage) {
-        const spaceUpdated = await prisma.space.update({
-          where: { id: spaceId },
-          data: {
-            imageUrl: dataImage.securePath,
-          },
-        });
-        res.status(200).json(spaceUpdated);
+        res.status(200).json({ url: dataImage.securePath });
       }
     } catch (error) {
       console.log(error);
@@ -42,4 +34,4 @@ const updateSpaceImage: SpaceHandlers["updateSpaceImage"] = async (
   }
 };
 
-export default updateSpaceImage;
+export default uploadSpaceImage;

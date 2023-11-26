@@ -12,6 +12,10 @@ type TSpaceBodyAdmin = {
   ownerId?: string;
 };
 
+type TSpaceImageBodyAdmin = {
+  url: string;
+};
+
 type TSpaceQuery = { categories?: string; owner?: string; fromAdmin?: string };
 
 type TAddUserBody = string[];
@@ -37,10 +41,10 @@ export interface SpaceHandlers {
     TSpaceBody | TSpaceBodyAdmin,
     TSpaceQuery
   >;
-  updateSpaceImage: RequestHandler<
-    { id: string },
-    TSpaceBodyAdmin | ResponseError,
-    TSpaceBody,
+  uploadSpaceImage: RequestHandler<
+    null,
+    TSpaceImageBodyAdmin | ResponseError,
+    TSpaceBodyAdmin,
     TSpaceQuery
   >;
   delete: RequestHandler;
