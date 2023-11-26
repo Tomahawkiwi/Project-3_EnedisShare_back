@@ -11,7 +11,7 @@ type TCategoryUpdateAdmin = Omit<
 type TAddUserBody = string[];
 type TRemoveUserBody = string[];
 
-type TQuery = { userID?: string; space?: string };
+type TQuery = { userID?: string; space?: string; fromAdmin?: string };
 
 export interface CategoryHandlers {
   getAll: RequestHandler<null, Category[] | ResponseError, null, TQuery>;
@@ -29,12 +29,8 @@ export interface CategoryHandlers {
   update: RequestHandler<
     { id: string },
     Category | ResponseError,
-    TCategoryBody
-  >;
-  updateFromAdmin: RequestHandler<
-    { id: string },
-    Category | ResponseError,
-    TCategoryUpdateAdmin
+    TCategoryBody | TCategoryUpdateAdmin,
+    TQuery
   >;
   delete: RequestHandler<{ id: string }, Category | ResponseError, null>;
   addUser: RequestHandler<

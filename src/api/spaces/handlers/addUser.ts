@@ -51,17 +51,25 @@ export const connectUserToSpaceAndCategory = async ({
 const addUser: SpaceHandlers["addUser"] = async (req, res) => {
   const { id } = req.params;
   const usersToConnect = req.body;
+  const { role } = req.user;
+  const { fromAdmin } = req.query;
 
-  try {
-    const updatedSpace = await connectUserToSpaceAndCategory({
-      spaceId: id,
-      userIds: usersToConnect,
-    });
-    res.status(200).json(updatedSpace);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: error });
+  // Only from admin
+  if ((role === "ADMIN" || role === "SUPER_ADMIN") && fromAdmin === "true") {
+    try {
+      const updatedSpace = await connectUserToSpaceAndCategory({
+        spaceId: id,
+        userIds: usersToConnect,
+      });
+      res.status(200).json(updatedSpace);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error });
+    }
+  } else {
+    res.status(403).json({ message: "Forbidden" });
   }
+  return;
 };
 
 export default addUser;
